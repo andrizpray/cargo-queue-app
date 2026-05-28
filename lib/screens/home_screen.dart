@@ -58,7 +58,7 @@ class _HomeScreenState extends State<HomeScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Cargo Queue'),
+        title: const Text('Cargo'),
         actions: [
           IconButton(
             icon: const Icon(Icons.qr_code_scanner),

@@ -8,6 +8,7 @@ import '../services/api_service.dart';
 import 'create_queue_screen.dart';
 import 'login_screen.dart';
 import 'queue_detail_screen.dart';
+import 'whatsapp_settings_screen.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -120,6 +121,14 @@ class _HomeScreenState extends State<HomeScreen> {
               icon: const Icon(Icons.logout),
               tooltip: 'Logout',
               onPressed: _handleLogout,
+            ),
+            IconButton(
+              icon: const Icon(Icons.settings),
+              tooltip: 'Settings',
+              onPressed: () => Navigator.push(
+                context,
+                MaterialPageRoute(builder: (_) => const WhatsAppSettingsScreen()),
+              ),
             ),
           ],
         ],

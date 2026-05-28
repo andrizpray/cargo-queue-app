@@ -170,4 +170,17 @@ class ApiService {
         .map((json) => Location.fromJson(json as Map<String, dynamic>))
         .toList();
   }
+
+  // User/Notification endpoints
+  Future<Map<String, dynamic>> getNotifications() async {
+    final data = await _get(ApiEndpoints.notifications);
+    return data as Map<String, dynamic>;
+  }
+
+  Future<void> updateUserPhone(int userId, String phone) async {
+    await _put(
+      ApiEndpoints.updateUserPhone(userId),
+      {'phone': phone},
+    );
+  }
 }

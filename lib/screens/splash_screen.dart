@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../providers/auth_provider.dart';
 import '../services/api_service.dart';
+import '../services/notification_service.dart';
 import 'home_screen.dart';
 import 'login_screen.dart';
 
@@ -30,6 +31,9 @@ class _SplashScreenState extends State<SplashScreen> {
     if (authProvider.isAuthenticated && authProvider.token != null) {
       // Set token for API calls
       apiService.setAuthToken(authProvider.token);
+      
+      // Request notification permission on first launch
+      await NotificationService().requestPermissionOnFirstLaunch();
       
       if (mounted) {
         Navigator.of(context).pushReplacement(

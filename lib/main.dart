@@ -4,6 +4,7 @@ import 'config/constants.dart';
 import 'providers/auth_provider.dart';
 import 'providers/queue_provider.dart';
 import 'providers/vehicle_provider.dart';
+import 'providers/user_provider.dart';
 import 'screens/splash_screen.dart';
 import 'services/api_service.dart';
 
@@ -23,6 +24,7 @@ class CargoQueueApp extends StatelessWidget {
         ChangeNotifierProvider(create: (_) => AuthProvider(apiService)),
         ChangeNotifierProvider(create: (_) => QueueProvider(apiService)),
         ChangeNotifierProvider(create: (_) => VehicleProvider(apiService)),
+        ChangeNotifierProvider(create: (_) => UserProvider(apiService)),
       ],
       child: MaterialApp(
         title: 'Cargo Queue',

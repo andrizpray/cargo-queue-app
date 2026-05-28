@@ -16,7 +16,10 @@ class ApiEndpoints {
   static const String locations = '/locations';
   static const String createQueue = '/queues';
   static const String updateQueueStatus = '/queues/{id}/status';
+  static const String notifications = '/notifications';
+  static const String userPhone = '/users/{id}/phone';
 
   static String queueById(int id) => '/queues/$id';
   static String updateStatus(int id) => '/queues/$id/status';
+  static String updateUserPhone(int userId) => '/users/$userId/phone';
 }

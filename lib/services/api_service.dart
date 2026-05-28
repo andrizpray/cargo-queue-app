@@ -18,15 +18,57 @@ class ApiException implements Exception {
 class ApiService {
   final http.Client _client;
   final String _baseUrl;
+  String? _authToken;
 
   ApiService({http.Client? client, String? baseUrl})
       : _client = client ?? http.Client(),
         _baseUrl = baseUrl ?? AppConstants.apiBaseUrl;
 
-  Map<String, String> get _headers => {
+  void setAuthToken(String? token) {
+    _authToken = token;
+  }
+
+  Map<String, String> get _headers {
+    final headers = {
+      'Content-Type': 'application/json',
+      'Accept': 'application/json',
+    };
+    if (_authToken != null) {
+      headers['Authorization'] = 'Bearer $_authToken';
+    }
+    return headers;
+  }
+
+  // Auth endpoints
+  Future<dynamic> login(String email, String password) async {
+    final response = await _client.post(
+      Uri.parse('$_baseUrl${ApiEndpoints.login}'),
+      headers: {
         'Content-Type': 'application/json',
         'Accept': 'application/json',
-      };
+      },
+      body: jsonEncode({'email': email, 'password': password}),
+    );
+    return _handleResponse(response);
+  }
+
+  Future<dynamic> register(
+      String email, String password, String name, String role) async {
+    final response = await _client.post(
+      Uri.parse('$_baseUrl${ApiEndpoints.register}'),
+      headers: {
+        'Content-Type': 'application/json',
+        'Accept': 'application/json',
+      },
+      body: jsonEncode({
+        'email': email,
+        'password': password,
+        'name': name,
+        'role': role,
+      }),
+    );
+    return _handleResponse(response);
+  }
 
   Future<dynamic> _get(String endpoint) async {
     final response = await _client.get(

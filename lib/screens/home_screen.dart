@@ -1,9 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import '../models/user_model.dart';
 import '../models/queue_model.dart';
+import '../providers/auth_provider.dart';
 import '../providers/queue_provider.dart';
-import 'barcode_scanner_screen.dart';
+import '../services/api_service.dart';
 import 'create_queue_screen.dart';
+import 'login_screen.dart';
 import 'queue_detail_screen.dart';
 
 class HomeScreen extends StatefulWidget {
@@ -54,21 +57,71 @@ class _HomeScreenState extends State<HomeScreen> {
     }
   }
 
+  Future<void> _handleLogout() async {
+    final confirmed = await showDialog<bool>(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: const Text('Logout'),
+        content: const Text('Are you sure you want to logout?'),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context, false),
+            child: const Text('Cancel'),
+          ),
+          FilledButton(
+            onPressed: () => Navigator.pop(context, true),
+            child: const Text('Logout'),
+          ),
+        ],
+      ),
+    );
+
+    if (confirmed == true && mounted) {
+      final authProvider = context.read<AuthProvider>();
+      final apiService = context.read<ApiService>();
+      
+      authProvider.logout();
+      apiService.setAuthToken(null);
+      
+      if (mounted) {
+        Navigator.of(context).pushReplacement(
+          MaterialPageRoute(builder: (_) => const LoginScreen()),
+        );
+      }
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
+    final authProvider = context.watch<AuthProvider>();
+    final user = authProvider.user;
+    final canCreateQueue = user?.canCreateQueue ?? false;
+
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Cargo'),
+        title: Text(_getTitle(user)),
         actions: [
-          IconButton(
-            icon: const Icon(Icons.qr_code_scanner),
-            tooltip: 'Scan Barcode',
-            onPressed: () => Navigator.push(
-              context,
-              MaterialPageRoute(
-                  builder: (_) => const BarcodeScannerScreen()),
+          if (user != null) ...[
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 8),
+              child: Chip(
+                avatar: CircleAvatar(
+                  backgroundColor: _getRoleColor(user.role),
+                  radius: 12,
+                  child: Text(
+                    user.role.name[0].toUpperCase(),
+                    style: const TextStyle(fontSize: 10, color: Colors.white),
+                  ),
+                ),
+                label: Text(user.name),
+              ),
             ),
-          ),
+            IconButton(
+              icon: const Icon(Icons.logout),
+              tooltip: 'Logout',
+              onPressed: _handleLogout,
+            ),
+          ],
         ],
       ),
       body: Column(
@@ -132,14 +185,16 @@ class _HomeScreenState extends State<HomeScreen> {
           ),
         ],
       ),
-      floatingActionButton: FloatingActionButton.extended(
-        onPressed: () => Navigator.push(
-          context,
-          MaterialPageRoute(builder: (_) => const CreateQueueScreen()),
-        ).then((_) => _refresh()),
-        icon: const Icon(Icons.add),
-        label: const Text('New Queue'),
-      ),
+      floatingActionButton: canCreateQueue
+          ? FloatingActionButton.extended(
+              onPressed: () => Navigator.push(
+                context,
+                MaterialPageRoute(builder: (_) => const CreateQueueScreen()),
+              ).then((_) => _refresh()),
+              icon: const Icon(Icons.add),
+              label: const Text('New Queue'),
+            )
+          : null,
       bottomNavigationBar: Consumer<QueueProvider>(
         builder: (context, provider, _) {
           return Container(
@@ -186,6 +241,30 @@ class _HomeScreenState extends State<HomeScreen> {
         },
       ),
     );
+  }
+
+  String _getTitle(User? user) {
+    switch (user?.role) {
+      case UserRole.driver:
+        return 'Driver Dashboard';
+      case UserRole.security:
+        return 'Security Dashboard';
+      case UserRole.admin:
+        return 'Admin Dashboard';
+      default:
+        return 'Cargo Queue';
+    }
+  }
+
+  Color _getRoleColor(UserRole role) {
+    switch (role) {
+      case UserRole.driver:
+        return Colors.blue;
+      case UserRole.security:
+        return Colors.purple;
+      case UserRole.admin:
+        return Colors.orange;
+    }
   }
 }
 

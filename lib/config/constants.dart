@@ -6,6 +6,9 @@ class AppConstants {
 }
 
 class ApiEndpoints {
+  static const String login = '/auth/login';
+  static const String register = '/auth/register';
+  static const String logout = '/auth/logout';
   static const String queues = '/queues';
   static const String queueHistory = '/queue-history';
   static const String vehicles = '/vehicles';

@@ -4,6 +4,8 @@ import '../models/queue_model.dart';
 import '../providers/queue_provider.dart';
 import 'package:intl/intl.dart' hide TextDirection;
 
+// ignore_for_file: use_build_context_synchronously
+
 class QueueDetailScreen extends StatefulWidget {
   final int queueId;
 
@@ -28,6 +30,9 @@ class _QueueDetailScreenState extends State<QueueDetailScreen> {
     final nextStatuses = _nextStatuses(queue.status);
     if (nextStatuses.isEmpty) return;
 
+    final provider = context.read<QueueProvider>();
+    final messenger = ScaffoldMessenger.of(context);
+
     final selected = await showModalBottomSheet<QueueStatus>(
       context: context,
       builder: (ctx) => _StatusPickerSheet(statuses: nextStatuses),
@@ -36,8 +41,11 @@ class _QueueDetailScreenState extends State<QueueDetailScreen> {
     if (selected == null || !mounted) return;
 
     final notesController = TextEditingController();
+    if (!mounted) return;
+    
+    final dialogContext = context;
     final confirmed = await showDialog<bool>(
-      context: context,
+      context: dialogContext,
       builder: (ctx) => AlertDialog(
         title: Text('Move to ${selected.label}?'),
         content: TextField(
@@ -61,7 +69,7 @@ class _QueueDetailScreenState extends State<QueueDetailScreen> {
 
     if (confirmed != true || !mounted) return;
 
-    final success = await context.read<QueueProvider>().updateQueueStatus(
+    final success = await provider.updateQueueStatus(
           queue.id,
           selected.name,
           notes: notesController.text.trim().isEmpty
@@ -72,19 +80,23 @@ class _QueueDetailScreenState extends State<QueueDetailScreen> {
     if (!mounted) return;
 
     if (success) {
-      context.read<QueueProvider>().loadQueueHistory(widget.queueId);
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-            content: Text('Status updated to ${selected.label}'),
-            backgroundColor: Colors.green),
-      );
+      provider.loadQueueHistory(widget.queueId);
+      if (mounted) {
+        messenger.showSnackBar(
+          SnackBar(
+              content: Text('Status updated to ${selected.label}'),
+              backgroundColor: Colors.green),
+        );
+      }
     } else {
-      final error = context.read<QueueProvider>().error;
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-            content: Text(error ?? 'Failed to update status'),
-            backgroundColor: Colors.red),
-      );
+      final error = provider.error;
+      if (mounted) {
+        messenger.showSnackBar(
+          SnackBar(
+              content: Text(error ?? 'Failed to update status'),
+              backgroundColor: Colors.red),
+        );
+      }
     }
   }
 
@@ -221,9 +233,9 @@ class _StatusBanner extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.symmetric(vertical: 12),
       decoration: BoxDecoration(
-        color: color.withOpacity(0.1),
+        color: color.withValues(alpha: 0.1),
         borderRadius: BorderRadius.circular(8),
-        border: Border.all(color: color.withOpacity(0.4)),
+        border: Border.all(color: color.withValues(alpha: 0.4)),
       ),
       child: Center(
         child: Text(

@@ -54,14 +54,6 @@ class ApiService {
     return _handleResponse(response);
   }
 
-  Future<dynamic> _delete(String endpoint) async {
-    final response = await _client.delete(
-      Uri.parse('$_baseUrl$endpoint'),
-      headers: _headers,
-    );
-    return _handleResponse(response);
-  }
-
   dynamic _handleResponse(http.Response response) {
     if (response.statusCode >= 200 && response.statusCode < 300) {
       if (response.body.isEmpty) return null;

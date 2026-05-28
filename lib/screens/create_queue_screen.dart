@@ -175,10 +175,10 @@ class _CreateQueueScreenState extends State<CreateQueueScreen> {
             // Vehicle type (if not found from lookup)
             if (_selectedVehicle == null)
               Consumer<VehicleProvider>(
-                builder: (_, provider, __) {
+                builder: (_, provider, _) {
                   if (provider.vehicleTypes.isEmpty) return const SizedBox.shrink();
                   return DropdownButtonFormField<VehicleType>(
-                    value: _selectedVehicleType,
+                    initialValue: _selectedVehicleType,
                     decoration: const InputDecoration(
                       labelText: 'Vehicle Type',
                       border: OutlineInputBorder(),

@@ -110,7 +110,7 @@ class _HomeScreenState extends State<HomeScreen> {
                   child: ListView.separated(
                     padding: const EdgeInsets.all(12),
                     itemCount: provider.queues.length,
-                    separatorBuilder: (_, __) => const SizedBox(height: 8),
+                    separatorBuilder: (_, _) => const SizedBox(height: 8),
                     itemBuilder: (context, index) {
                       final queue = provider.queues[index];
                       return _QueueCard(
@@ -194,7 +194,7 @@ class _QueueCard extends StatelessWidget {
       child: ListTile(
         onTap: onTap,
         leading: CircleAvatar(
-          backgroundColor: statusColor.withOpacity(0.2),
+          backgroundColor: statusColor.withValues(alpha: 0.2),
           child: Text(
             queue.queueNumber.length > 3
                 ? queue.queueNumber.substring(queue.queueNumber.length - 3)

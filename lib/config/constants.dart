@@ -1,8 +1,9 @@
 class AppConstants {
-  static const String baseUrl = 'http://localhost:8000';
+  // Change this to your server IP/domain when deploying
+  static const String baseUrl = 'http://43.134.37.14:8000';
   static const String apiVersion = '/api';
   static const String apiBaseUrl = '$baseUrl$apiVersion';
-  static const String wsUrl = 'ws://localhost:8000/app/cargo-queue-key';
+  static const String wsUrl = 'ws://43.134.37.14:8000/app/cargo-queue-key';
 }
 
 class ApiEndpoints {

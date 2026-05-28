@@ -53,6 +53,9 @@ dependencies:
   # Date formatting
   intl: ^0.19.0
 
+  # WebSocket client for real-time updates
+  web_socket_channel: ^2.4.0
+
 dev_dependencies:
   flutter_test:
     sdk: flutter

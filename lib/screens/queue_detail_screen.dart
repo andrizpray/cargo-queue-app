@@ -175,6 +175,36 @@ class _QueueDetailScreenState extends State<QueueDetailScreen> {
               padding: const EdgeInsets.all(16),
               children: [
                 _StatusBanner(status: queue.status, color: _statusColor(queue.status)),
+                const SizedBox(height: 8),
+                Consumer<QueueProvider>(
+                  builder: (context, provider, _) {
+                    return Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 4),
+                      child: Row(
+                        children: [
+                          Container(
+                            width: 10,
+                            height: 10,
+                            decoration: BoxDecoration(
+                              shape: BoxShape.circle,
+                              color: provider.wsConnected ? Colors.green : Colors.orange,
+                            ),
+                          ),
+                          const SizedBox(width: 8),
+                          Text(
+                            provider.wsConnected
+                                ? 'Live updates enabled'
+                                : 'Live updates disabled',
+                            style: TextStyle(
+                              fontSize: 12,
+                              color: provider.wsConnected ? Colors.green : Colors.orange,
+                            ),
+                          ),
+                        ],
+                      ),
+                    );
+                  },
+                ),
                 const SizedBox(height: 16),
                 _InfoSection(
                   title: 'Vehicle',

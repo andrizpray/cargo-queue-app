@@ -2,6 +2,7 @@ class AppConstants {
   static const String baseUrl = 'http://localhost:8000';
   static const String apiVersion = '/api';
   static const String apiBaseUrl = '$baseUrl$apiVersion';
+  static const String wsUrl = 'ws://localhost:8000/app/cargo-queue-key';
 }
 
 class ApiEndpoints {
